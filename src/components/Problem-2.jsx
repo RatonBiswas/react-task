@@ -6,7 +6,8 @@ const Problem2 = () => {
   const [items, setItems] = useState([]);
   const [search, setSearch] = useState("");
   const [title, setTitle] = useState("Model-A");
-  const [check, setCheck] = useState(false);
+
+  const [isEvenChecked, setEvenChecked] = useState(false);
 
   useEffect(() => {
     const getAllContactData = async () => {
@@ -34,16 +35,10 @@ const Problem2 = () => {
     setTitle("Model-B");
   };
 
-  
-
   const handleChecked = (e) => {
-    if (e.target.checked) {
-      const check = items.filter((item) => item.id % 2 === 0);
-      setItems(check);
-      setCheck(true)
-    }
+    setEvenChecked(!isEvenChecked);
   };
-  
+
   return (
     <div className="container">
       <div className="row justify-content-center mt-5">
@@ -108,26 +103,52 @@ const Problem2 = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {items
-                        .filter((item) => {
-                          return search.toLocaleLowerCase() === ""
-                            ? item
-                            : item.phone.toLocaleLowerCase().includes(search);
-                        })
-                        .map(({ id, phone, country }) => {
-                          return (
-                            <tr key={id}>
-                              <th> {id} </th>
-                              <td>{phone}</td>
-                              <td>
-                                {" "}
-                                {typeof country === "object"
-                                  ? country.name
-                                  : country}{" "}
-                              </td>
-                            </tr>
-                          );
-                        })}
+                      {isEvenChecked
+                        ? items
+                            .filter((item) => item.id % 2 === 0)
+                            .filter((item) => {
+                              return search.toLocaleLowerCase() === ""
+                                ? item
+                                : item.phone
+                                    .toLocaleLowerCase()
+                                    .includes(search);
+                            })
+                            .map(({ id, phone, country }) => {
+                              return (
+                                <tr key={id}>
+                                  <th> {id} </th>
+                                  <td>{phone}</td>
+                                  <td>
+                                    {" "}
+                                    {typeof country === "object"
+                                      ? country.name
+                                      : country}{" "}
+                                  </td>
+                                </tr>
+                              );
+                            })
+                        : items
+                            .filter((item) => {
+                              return search.toLocaleLowerCase() === ""
+                                ? item
+                                : item.phone
+                                    .toLocaleLowerCase()
+                                    .includes(search);
+                            })
+                            .map(({ id, phone, country }) => {
+                              return (
+                                <tr key={id}>
+                                  <th> {id} </th>
+                                  <td>{phone}</td>
+                                  <td>
+                                    {" "}
+                                    {typeof country === "object"
+                                      ? country.name
+                                      : country}{" "}
+                                  </td>
+                                </tr>
+                              );
+                            })}
                     </tbody>
                   </table>
                 </div>
@@ -136,7 +157,7 @@ const Problem2 = () => {
                 <input
                   type="checkbox"
                   onChange={handleChecked}
-                  onClick={() => setItems(items)}
+                  value={isEvenChecked}
                 />
                 <label htmlFor="">Only even</label>
                 <button
